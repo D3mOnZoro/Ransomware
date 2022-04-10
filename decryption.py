@@ -5,22 +5,19 @@ from base64 import b64decode
 import getpass
 import os,string
 from tkinter import messagebox
-import tkgui
-from encryption import encrypted_file
+from encryption import files_encrypted
+import sys
 
 files_decrypted=0
-
-count=1
+ct_err=0
 
 class Recover:
-    def __init__(self,file_name,key,no_encrypted):
+    def __init__(self,file_name,key):
         self.file_name=file_name
         self.key=key
-        self.no_encrypted=no_encrypted
     
     def decrypted_file(self):
-        global count, files_decrypted
-        print(count)
+        global files_decrypted,ct_err
         with open (self.file_name,"r") as file:
             try:
                 data = file.read()
@@ -38,17 +35,27 @@ class Recover:
                 file.close()
                 os.rename(self.file_name,self.file_name[:-5])
                 files_decrypted += 1
-                print(files_decrypted,"is decrypted files")
                 
             except(ValueError,KeyError):
-                if count <2:
-                  print("wrong password")
-                  messagebox.showerror("ERROR","Wrong Key!!! Enter the valid key ") 
-                  count +=1
-
+                if ct_err==0:
+                 print("wrong password")
+                 messagebox.showerror("ERROR","Wrong Key!!! Enter the valid key ") 
+                ct_err += 1   
+                
+            
+                
+    
     def winclose(self):
-        if (self.no_encrypted == files_decrypted):
-            tkgui.win.destroy()
+        global files_encrypted
+        if files_encrypted==files_decrypted:
+         messagebox.showinfo("Success","YOUR FILES HAVE BEEN DECRYPTED")
+         sys.exit("Your files have been decrypted successfully")
+        
+        
+
+    
+                
+                  
             
             
             
